@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.2,
+  "group": "pink_garnet",
+  "ingredient": {
+    "item": "macancraft:raw_macan_ore"
+  },
+  "result": {
+    "id": "macancraft:macan_ore"
+  }
+}

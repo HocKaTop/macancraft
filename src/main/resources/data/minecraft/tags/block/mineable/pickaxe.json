@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "macancraft:macan_block",
+    "macancraft:macan_ore_block"
+  ]
+}

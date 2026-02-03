@@ -1,0 +1,7 @@
+{
+  "variants":{
+    "": {
+      "model":"macancraft:block/macan_block"
+    }
+  }
+}
