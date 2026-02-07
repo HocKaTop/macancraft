@@ -2,6 +2,7 @@ package macancraft;
 
 import macancraft.block.ModBlocks;
 import macancraft.item.ModItems;
+import macancraft.registry.ModEntities;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ public class Macancraft implements ModInitializer {
 	public void onInitialize() {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
+		ModEntities.register();
 		LOGGER.info("Hello Fabric world!");
 	}
 }

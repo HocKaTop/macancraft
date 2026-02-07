@@ -17,6 +17,8 @@
 	"entrypoints": {
 		"main": [
 			"macancraft.Macancraft"
+		],"client": [
+			"macancraft.MacancraftClient"
 		],
 		"fabric-datagen": [
 			"macancraft.MacancraftDataGenerator"
