@@ -91,10 +91,10 @@ public class MacanEntity extends TameableEntity implements Inventory {
     // ===== АТРИБУТЫ =====
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 30.0)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.30)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0); // ✅ авто-подъём
+                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0);
     }
 
 
