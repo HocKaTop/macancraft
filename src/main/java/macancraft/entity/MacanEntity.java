@@ -42,7 +42,7 @@ public class MacanEntity extends TameableEntity implements Inventory {
     public int size() {
         return items.size();
     }
-
+ // вщу
     @Override
     public boolean isEmpty() {
         for (ItemStack stack : items) {
