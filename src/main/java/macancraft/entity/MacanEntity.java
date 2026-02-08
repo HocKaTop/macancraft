@@ -35,14 +35,16 @@ public class MacanEntity extends TameableEntity implements Inventory {
 
     public MacanEntity(EntityType<? extends TameableEntity> type, World world) {
         super(type, world);
+
     }
+
 
     // ===== Inventory =====
     @Override
     public int size() {
         return items.size();
     }
- // вщу
+
     @Override
     public boolean isEmpty() {
         for (ItemStack stack : items) {
@@ -72,9 +74,7 @@ public class MacanEntity extends TameableEntity implements Inventory {
     }
 
     @Override
-    public void markDirty() {
-        // обязательно, но логика не требуется
-    }
+    public void markDirty() {}
 
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
@@ -93,19 +93,19 @@ public class MacanEntity extends TameableEntity implements Inventory {
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 30.0)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.30)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0);
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0)
+                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0); // ✅ авто-подъём
     }
+
 
     // ===== AI =====
     @Override
     protected void initGoals() {
 
-        // ---------- TARGETS (самое важное) ----------
         this.targetSelector.add(1, new TrackOwnerAttackerGoal(this));
         this.targetSelector.add(2, new AttackWithOwnerGoal(this));
         this.targetSelector.add(3, new RevengeGoal(this));
 
-        // Атака враждебных мобов, если уже агр
         this.targetSelector.add(
                 4,
                 new ActiveTargetGoal<>(
@@ -115,28 +115,14 @@ public class MacanEntity extends TameableEntity implements Inventory {
                 )
         );
 
-        // ---------- ACTION GOALS ----------
         this.goalSelector.add(1, new SwimGoal(this));
-
-        // ОБЯЗАТЕЛЬНО: нормальная атака
-        this.goalSelector.add(
-                2,
-                new MeleeAttackGoal(this, 1.2D, true)
-        );
-
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.2D, true));
         this.goalSelector.add(3, new SitGoal(this));
-
-        // ❗ FollowOwner ТОЛЬКО ПОСЛЕ атаки
-        this.goalSelector.add(
-                5,
-                new FollowOwnerGoal(this, 1.0D, 5.0F, 2.0F)
-        );
-
+        this.goalSelector.add(5, new FollowOwnerGoal(this, 1.0D, 5.0F, 2.0F));
         this.goalSelector.add(6, new WanderAroundFarGoal(this, 0.8D));
         this.goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(8, new LookAroundGoal(this));
     }
-
 
     // ===== ОБЯЗАТЕЛЬНЫЕ =====
     @Override
@@ -154,7 +140,6 @@ public class MacanEntity extends TameableEntity implements Inventory {
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
 
-        // ПРИРУЧЕНИЕ
         if (!this.isTamed() && stack.isOf(Items.BONE)) {
             if (!player.getAbilities().creativeMode) {
                 stack.decrement(1);
@@ -173,7 +158,6 @@ public class MacanEntity extends TameableEntity implements Inventory {
             return ActionResult.SUCCESS;
         }
 
-        // УЖЕ ПРИРУЧЕН
         if (this.isTamed() && this.isOwner(player) && !this.getWorld().isClient) {
             this.setSitting(false);
 
@@ -188,17 +172,17 @@ public class MacanEntity extends TameableEntity implements Inventory {
         return super.interactMob(player, hand);
     }
 
-    // ===== ЕЗДА =====
+    // ===== ЕЗДА + ПРЫЖОК =====
     @Override
     protected boolean canAddPassenger(Entity passenger) {
         return passenger instanceof PlayerEntity;
     }
 
-
-
     @Override
     public void travel(Vec3d movementInput) {
+
         if (this.hasPassengers() && this.getFirstPassenger() instanceof PlayerEntity player) {
+
             this.setYaw(player.getYaw());
             this.bodyYaw = this.getYaw();
             this.headYaw = this.getYaw();
@@ -211,10 +195,12 @@ public class MacanEntity extends TameableEntity implements Inventory {
             );
 
             super.travel(new Vec3d(sideways, movementInput.y, forward));
-        } else {
-            super.travel(movementInput);
+            return;
         }
+
+        super.travel(movementInput);
     }
+
 
     // ===== GUI =====
     private void openInventory(PlayerEntity player) {
