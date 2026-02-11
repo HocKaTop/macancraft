@@ -4,6 +4,7 @@ import macancraft.block.ModBlocks;
 import macancraft.entity.MacanSpawnPattern;
 import macancraft.item.ModItems;
 import macancraft.registry.ModEntities;
+import macancraft.worldgen.ModWorldGen;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -23,6 +24,7 @@ public class Macancraft implements ModInitializer {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
 		ModEntities.register();
+		ModWorldGen.generateOres();
 		LOGGER.info("Hello Fabric world!");
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
