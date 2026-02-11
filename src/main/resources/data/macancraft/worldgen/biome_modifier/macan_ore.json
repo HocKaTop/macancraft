@@ -1,8 +1,0 @@
-{
-  "type": "fabric:add_features",
-  "features": [
-    "macancraft:macan_ore"
-  ],
-  "step": "underground_ores",
-  "biomes": "#minecraft:is_overworld"
-}
