@@ -1,6 +1,5 @@
 package macancraft.entity.client;
 
-import macancraft.Macancraft;
 import macancraft.entity.MacanEntity;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -23,5 +22,10 @@ public class MacanRenderer extends LivingEntityRenderer<MacanEntity, PlayerEntit
     @Override
     public Identifier getTexture(MacanEntity entity) {
         return TEXTURE;
+    }
+
+    @Override
+    protected boolean hasLabel(MacanEntity entity) {
+        return entity.hasCustomName() && super.hasLabel(entity);
     }
 }

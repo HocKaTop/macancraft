@@ -4,8 +4,16 @@
   "item.macancraft.raw_macan_ore":"Raw Macan Ore",
   "item.macancraft.macan_block":"Macan Block",
   "item.macancraft.macan_ore_block":"Macan Ore Block",
+  "item.macancraft.macan_whistle":"Macan Whistle",
+  "item.macancraft.macan_spawn_egg":"Macan Spawn Egg",
+  "item.macancraft.macan_whistle.empty":"No companion is bound",
+  "item.macancraft.macan_whistle.occupied":"This whistle already holds a companion",
+  "item.macancraft.macan_whistle.recalled":"Companion recalled",
+  "item.macancraft.macan_whistle.spawn_failed":"Companion could not be summoned",
+  "item.macancraft.macan_whistle.summoned":"Companion summoned",
 
-
+  "entity.macancraft.macan": "Macan",
+  "container.macancraft.macan_inventory": "Macan Inventory",
   "block.macancraft.macan_block": "Macan Block",
   "block.macancraft.macan_ore_block": "Macan Ore Block"
 }

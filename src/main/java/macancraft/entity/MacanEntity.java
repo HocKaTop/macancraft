@@ -1,5 +1,6 @@
 package macancraft.entity;
 
+import macancraft.item.ModItems;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -19,6 +20,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.text.Text;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -138,7 +140,15 @@ public class MacanEntity extends TameableEntity implements Inventory {
     // ===== ВЗАИМОДЕЙСТВИЕ =====
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (hand != Hand.MAIN_HAND) {
+            return ActionResult.PASS;
+        }
+
         ItemStack stack = player.getStackInHand(hand);
+
+        if (stack.isOf(ModItems.MACAN_WHISTLE)) {
+            return ActionResult.PASS;
+        }
 
         if (!this.isTamed() && stack.isOf(Items.BONE)) {
             if (!player.getAbilities().creativeMode) {
@@ -158,15 +168,25 @@ public class MacanEntity extends TameableEntity implements Inventory {
             return ActionResult.SUCCESS;
         }
 
-        if (this.isTamed() && this.isOwner(player) && !this.getWorld().isClient) {
-            this.setSitting(false);
-
+        if (this.isTamed() && this.isOwner(player)) {
             if (player.isSneaking()) {
-                openInventory(player);
+                if (!this.getWorld().isClient) {
+                    openInventory(player);
+                }
+                return ActionResult.SUCCESS;
+            } else if (stack.isOf(Items.BONE)) {
+                if (!this.getWorld().isClient) {
+                    toggleSitting();
+                }
+                return ActionResult.SUCCESS;
             } else {
-                player.startRiding(this);
+                if (!this.getWorld().isClient) {
+                    this.setSitting(false);
+                    this.setInSittingPose(false);
+                    player.startRiding(this);
+                }
+                return ActionResult.SUCCESS;
             }
-            return ActionResult.CONSUME;
         }
 
         return super.interactMob(player, hand);
@@ -204,6 +224,14 @@ public class MacanEntity extends TameableEntity implements Inventory {
 
     // ===== GUI =====
     private void openInventory(PlayerEntity player) {
+        Text title = Text.translatable("container.macancraft.macan_inventory")
+                .append(Text.literal(" | HP: " + formatHealth(this.getHealth()) + "/" + formatHealth(this.getMaxHealth())));
+        if (this.hasCustomName()) {
+            title = this.getCustomName().copy().append(
+                    Text.literal(" | HP: " + formatHealth(this.getHealth()) + "/" + formatHealth(this.getMaxHealth()))
+            );
+        }
+
         player.openHandledScreen(
                 new SimpleNamedScreenHandlerFactory(
                         (syncId, inv, p) ->
@@ -214,9 +242,21 @@ public class MacanEntity extends TameableEntity implements Inventory {
                                         this,
                                         3
                                 ),
-                        this.getDisplayName()
+                        title
                 )
         );
+    }
+
+    private void toggleSitting() {
+        boolean sitting = !this.isSitting();
+        this.setSitting(sitting);
+        this.setInSittingPose(sitting);
+        this.getNavigation().stop();
+        this.setTarget(null);
+    }
+
+    private static String formatHealth(float health) {
+        return health == (int) health ? Integer.toString((int) health) : String.format(java.util.Locale.ROOT, "%.1f", health);
     }
 
     // ===== NBT =====
